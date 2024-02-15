@@ -44,7 +44,7 @@ export class UserManagementComponent implements OnInit {
         closeBtnName: 'Close',
       },
     }
-    this.bsModalRef = this.bsModalService.show(RolesModalComponent, initialState)
+    // this.bsModalRef = this.bsModalService.show(RolesModalComponent, initialState)
     this.bsModalRef.onHide?.subscribe({
       next: () => {
         const isConfirmUpdate = this.bsModalRef.content?.isConfirmUpdate
