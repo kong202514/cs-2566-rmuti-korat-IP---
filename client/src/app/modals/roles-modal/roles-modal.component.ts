@@ -21,11 +21,7 @@ export class RolesModalComponent {
     'Moderator',
     'Member'
   ]
-  selectedRoles: any[] = [
-
-
-
-  ]
+  selectedRoles: any[] = []
 
 
   constructor(public bsModalRef: BsModalRef) { }

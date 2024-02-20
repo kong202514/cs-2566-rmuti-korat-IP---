@@ -25,6 +25,10 @@ import { ModalModule } from 'ngx-bootstrap/modal'
     ButtonsModule.forRoot(),
     NgxSpinnerModule.forRoot({ type: 'square-spin' }),
     ModalModule.forRoot(),
+
+
+
+
   ],
   exports: [
     TimeagoModule,

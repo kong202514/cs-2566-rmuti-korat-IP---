@@ -64,7 +64,12 @@ public class TokenService : ITokenService
         _privateKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"]!));
         this._userManager = userManager;
     }
-    public async Task<string> CreateToken(AppUser user)
+
+
+
+
+
+    public async Task<string> CreateToken(AppUser user)  //<--
     {
         var claims = new List<Claim> {
             //  new(JwtRegisteredClaimNames.NameId, user.UserName!),

@@ -17,6 +17,9 @@ export class AccountService {
 
 	constructor(private presenceService: PresenceService, private http: HttpClient) { }
 
+
+
+
 	register(model: any) {
 		return this.http.post<User>(`${this.baseUrl}account/register`, model).pipe(
 			map(user => {
@@ -46,7 +49,6 @@ export class AccountService {
 		user.roles = []
 		const roles = this.decodeToken(user.token).role
 		Array.isArray(roles) ? user.roles = roles : user.roles.push(roles)
-
 
 
 		localStorage.setItem('user', JSON.stringify(user))

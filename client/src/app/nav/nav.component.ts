@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core'
-import { AccountService } from '../_services/account.service'
-import { faL } from '@fortawesome/free-solid-svg-icons'
-import { Observable, map, of } from 'rxjs'
-import { User } from '../_models/user'
-import { Router } from '@angular/router'
-import { ToastrService } from 'ngx-toastr'
+import { Component, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
+import { ToastrService } from "ngx-toastr";
+import { Observable, of } from "rxjs";
+import { User } from "../_models/user";
+import { AccountService } from "../_services/account.service";
+
+
 
 @Component({
 	selector: 'app-nav',
@@ -12,7 +13,10 @@ import { ToastrService } from 'ngx-toastr'
 	styleUrls: ['./nav.component.css']
 })
 export class NavComponent implements OnInit {
-	model: any = {}
+	model: { username: string | undefined; password: string | undefined } = {
+		username: undefined,
+		password: undefined,
+	};
 	currentUser$: Observable<User | null> = of(null) // isLogin = false
 	user: User | null = null
 

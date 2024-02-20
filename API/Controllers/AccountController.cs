@@ -23,6 +23,7 @@ public class AccountController : BaseApiController
         _userManager = userManager;
         _mapper = mapper;
         _tokenService = tokenService;
+
     }
 
     private async Task<bool> isUserExists(string username)
