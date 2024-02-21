@@ -27,6 +27,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapHub<PresenceHub>("hubs/presence");
+app.MapHub<MessageHub>("hubs/message");
 
 
 
@@ -35,6 +36,9 @@ using var scope = app.Services.CreateScope();
 var service = scope.ServiceProvider;
 try
 {
+
+
+
     var dataContext = service.GetRequiredService<DataContext>();
     var userManager = service.GetRequiredService<UserManager<AppUser>>();//<--
 
@@ -44,6 +48,16 @@ try
 
     await dataContext.Database.MigrateAsync();
     await Seed.SeedUsers(userManager, roleManager); //<--
+
+
+
+
+    await dataContext.Database.MigrateAsync();
+    //await dataContext.Connections.RemoveRange(dataContext.Connections);//<-- good for small scale
+    //await dataContext.Database.ExecuteSqlRawAsync("TRUNCATE TABLE [Connections]"); //excellent, error for sqlite
+    await dataContext.Database.ExecuteSqlRawAsync("DELETE FROM [Connections]"); //<--good for sqlite
+    await Seed.SeedUsers(userManager, roleManager);
+
 }
 catch (Exception e)
 {

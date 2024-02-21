@@ -6,6 +6,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 
+#nullable disable
 namespace API.Data;
 
 public class MessageRepository : IMessageRepository
@@ -18,6 +19,14 @@ public class MessageRepository : IMessageRepository
         _dataContext = dataContext;
         _mapper = mapper;
     }
+
+    public void AddGroup(MessageGroup group)
+    {
+
+        _dataContext.MessageGroups.Add(group);
+
+    }
+
     public void AddMessage(Message message)
     {
         _dataContext.Messages.Add(message);
@@ -28,9 +37,21 @@ public class MessageRepository : IMessageRepository
         _dataContext.Messages.Remove(message);
     }
 
+    public async Task<Connection> GetConnection(string connectionId)
+    {
+        return await _dataContext.Connections.FindAsync(connectionId);
+    }
+
     public async Task<Message?> GetMessage(int id)
     {
         return await _dataContext.Messages.FindAsync(id);
+    }
+
+    public async Task<MessageGroup> GetMessageGroup(string groupName)
+    {
+        return await _dataContext.MessageGroups
+             .Include(group => group.Connections)
+             .FirstOrDefaultAsync(group => group.Name == groupName);
     }
 
 #nullable disable
@@ -93,6 +114,11 @@ public class MessageRepository : IMessageRepository
         };
         var messages = query.ProjectTo<MessageDto>(_mapper.ConfigurationProvider);
         return await PageList<MessageDto>.CreateAsync(messages, messageParams.PageNumber, messageParams.PageSize);
+    }
+
+    public void RemoveConnection(Connection connection)
+    {
+        _dataContext.Connections.Remove(connection);
     }
 
     public async Task<bool> SaveAllAsync() => await _dataContext.SaveChangesAsync() > 0;

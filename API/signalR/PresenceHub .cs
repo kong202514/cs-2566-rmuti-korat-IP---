@@ -1,4 +1,8 @@
 
+
+
+
+using API.Entities;
 using API.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
@@ -25,6 +29,8 @@ public class PresenceHub : Hub
         if (username is null || Context is null) return;
         await _presenceTracker.UserConnected(username, Context.ConnectionId);
         await Clients.Others.SendAsync("UserOnline", username);
+
+
         var onlineUsers = await _presenceTracker.GetOnlineUsers();
         await Clients.All.SendAsync("OnlineUsers", onlineUsers);
     }
@@ -37,5 +43,32 @@ public class PresenceHub : Hub
         var onlineUsers = await _presenceTracker.GetOnlineUsers();
         await Clients.All.SendAsync("OnlineUsers", onlineUsers);
         await base.OnDisconnectedAsync(exception);
+    }
+
+
+    private async Task<bool> addToMessageGroup(string groupName)
+    {
+        if (Context is null || Context.User is null) return false;
+        var connection = new Connection(Context.ConnectionId, Context.User.GetUsername());
+
+        var group = await _messageRepository.GetMessageGroup(groupName);
+        if (group is null)
+        {
+            group = new MessageGroup(groupName);
+            _messageRepository.AddGroup(group);
+        }
+
+        group.Connections.Add(connection);
+        return await _messageRepository.SaveAllAsync();
+    }
+
+    private async Task removeFromMessageGroup()
+    {
+        if (Context is null) return;
+        var connection = await _messageRepository.GetConnection(Context.ConnectionId);
+        if (connection is null) return;
+        _messageRepository.RemoveConnection(connection);
+        await _messageRepository.SaveAllAsync();
+
     }
 }
